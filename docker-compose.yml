@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    container_name: uphold_alert_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: uphold_alert_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  flyway:
+    image: flyway/flyway:latest
+    container_name: uphold_alert_migrations
+    depends_on:
+      - db
+    command: >
+      -url=jdbc:postgresql://db:5432/uphold_alert_db
+      -user=postgres
+      -password=postgres
+      migrate
+    volumes:
+      - ./migrations:/flyway/sql
+
+  bot:
+    build: .
+    container_name: uphold_alert_bot
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+      - flyway
+    environment:
+      USER: postgres
+      PASSWORD: postgres
+      HOST: db
+      PORT: 5432
+      NAME: uphold_alert_db
+      SCHEMA: uphold_alerts
+      TABLE: alerts
+
+volumes:
+  db_data:
