@@ -27,6 +27,9 @@ func main() {
 	}
 	defer db.Close()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	repo := postgres.NewPostgres(db, loadDbConfigs.Schema, loadDbConfigs.Table)
 
 	apiResponse := api.NewAPIResponse(nil)
@@ -39,16 +42,7 @@ func main() {
 
 	fmt.Println("Starting bot")
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	go func() {
-		sigChan := make(chan os.Signal, 1)
-		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-		<-sigChan
-		fmt.Println("Shutting down...")
-		cancel()
-	}()
+	go gracefulShutdown(cancel)
 
 	for _, t := range *tickers {
 		go runSchedulerBot(ctx, &wg, *t, apiResponse, repo)
@@ -59,12 +53,13 @@ func main() {
 	fmt.Println("All tickers finished")
 }
 
-func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models.Ticker, apiResponse *api.ApiResponse, repo *postgres.Postgres) {
+func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models.Ticker, apiResponse *api.UpholdApi, repo *postgres.Postgres) {
 	defer wg.Done()
 
 	tickerPublisher := logger.NewTickerPublisher()
 
 	tickerScheduler := services.NewTickerScheduler(apiResponse, &tickerValue, repo, tickerPublisher)
+
 	tickerScheduler.SchedulerStart(ctx)
 
 	if tickerValue.Config.Lifetime > 0 {
@@ -73,14 +68,29 @@ func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models
 			tickerScheduler.SchedulerStop()
 		case <-ctx.Done():
 			fmt.Println("Shutting down scheduler for", tickerValue.Pair)
+
 			tickerScheduler.SchedulerStop()
 		}
 	} else {
 		select {
 		case <-ctx.Done():
 			fmt.Println("Shutting down scheduler for", tickerValue.Pair)
+
 			tickerScheduler.SchedulerStop()
+
 			return
 		}
 	}
+}
+
+func gracefulShutdown(cancel context.CancelFunc) {
+	sigChan := make(chan os.Signal, 1)
+
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	<-sigChan
+
+	fmt.Println("Shutting down...")
+
+	cancel()
 }

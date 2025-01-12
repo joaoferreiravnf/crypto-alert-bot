@@ -13,24 +13,24 @@ import (
 
 var PublicURLTicker = "https://api.uphold.com/v0/ticker"
 
-// ApiResponse represents the API response
-type ApiResponse struct {
+// UpholdApi represents the API response
+type UpholdApi struct {
 	client *http.Client
 }
 
-// NewAPIResponse returns an new instance of ApiResponse
-func NewAPIResponse(client *http.Client) *ApiResponse {
+// NewAPIResponse returns an new instance of UpholdApi
+func NewAPIResponse(client *http.Client) *UpholdApi {
 	if client == nil {
 		client = http.DefaultClient
 	}
 
-	return &ApiResponse{
+	return &UpholdApi{
 		client: client,
 	}
 }
 
 // FetchPairData fetches the data for a given pair
-func (a *ApiResponse) FetchPairData(ctx context.Context, ticker *models.Ticker) error {
+func (a *UpholdApi) FetchPairData(ctx context.Context, ticker *models.Ticker) error {
 	pairUrl := fmt.Sprintf(PublicURLTicker+"/%s", ticker.Pair)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, pairUrl, nil)
@@ -57,7 +57,7 @@ func (a *ApiResponse) FetchPairData(ctx context.Context, ticker *models.Ticker) 
 }
 
 // ParseAPIData parses the API response
-func (a *ApiResponse) ParseAPIData(response *http.Response, ticker *models.Ticker) error {
+func (a *UpholdApi) ParseAPIData(response *http.Response, ticker *models.Ticker) error {
 	respBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		return errors.Wrap(err, "error reading api response")
@@ -72,7 +72,7 @@ func (a *ApiResponse) ParseAPIData(response *http.Response, ticker *models.Ticke
 }
 
 // IsPairValid checks if the pair exists and if it's a single pair
-func (a *ApiResponse) IsPairValid(pair string) (bool, error) {
+func (a *UpholdApi) IsPairValid(pair string) (bool, error) {
 	pairUrl := fmt.Sprintf(PublicURLTicker+"/%s", pair)
 
 	resp, err := a.client.Get(pairUrl)
