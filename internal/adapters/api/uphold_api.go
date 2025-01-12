@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -29,10 +30,15 @@ func NewAPIResponse(client *http.Client) *ApiResponse {
 }
 
 // FetchPairData fetches the data for a given pair
-func (a *ApiResponse) FetchPairData(ticker *models.Ticker) error {
+func (a *ApiResponse) FetchPairData(ctx context.Context, ticker *models.Ticker) error {
 	pairUrl := fmt.Sprintf(PublicURLTicker+"/%s", ticker.Pair)
 
-	resp, err := a.client.Get(pairUrl)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, pairUrl, nil)
+	if err != nil {
+		return errors.Wrap(err, "error creating api request")
+	}
+
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return err
 	}
