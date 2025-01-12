@@ -41,7 +41,8 @@ services:
       PORT: 5432
       NAME: uphold_alert_db
       SCHEMA: uphold_alerts
-      TABLE: alerts
+      TABLE_ALERTS: alerts
+      TABLE_CONFIGS: configs
 
 volumes:
   db_data:

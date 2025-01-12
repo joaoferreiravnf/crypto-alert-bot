@@ -30,7 +30,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	repo := postgres.NewPostgres(db, loadDbConfigs.Schema, loadDbConfigs.Table)
+	repo := postgres.NewPostgres(db, loadDbConfigs.Schema, loadDbConfigs.TableConfigs, loadDbConfigs.TableAlerts)
 
 	apiResponse := api.NewAPIResponse(nil)
 

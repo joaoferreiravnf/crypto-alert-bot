@@ -10,25 +10,27 @@ import (
 
 // DatabaseConfig holds the configuration for the database connection
 type DatabaseConfig struct {
-	Host     string
-	User     string
-	Password string
-	Port     string
-	Name     string
-	Schema   string
-	Table    string
+	Host         string
+	User         string
+	Password     string
+	Port         string
+	Name         string
+	Schema       string
+	TableAlerts  string
+	TableConfigs string
 }
 
 // LoadDatabaseConfig loads the database configuration from the environment variables defined on docker-compose.yml
 func LoadDatabaseConfig() *DatabaseConfig {
 	return &DatabaseConfig{
-		User:     os.Getenv("USER"),
-		Host:     os.Getenv("HOST"),
-		Password: os.Getenv("PASSWORD"),
-		Port:     os.Getenv("PORT"),
-		Name:     os.Getenv("NAME"),
-		Schema:   os.Getenv("SCHEMA"),
-		Table:    os.Getenv("TABLE"),
+		User:         os.Getenv("USER"),
+		Host:         os.Getenv("HOST"),
+		Password:     os.Getenv("PASSWORD"),
+		Port:         os.Getenv("PORT"),
+		Name:         os.Getenv("NAME"),
+		Schema:       os.Getenv("SCHEMA"),
+		TableAlerts:  os.Getenv("TABLE_ALERTS"),
+		TableConfigs: os.Getenv("TABLE_CONFIGS"),
 	}
 }
 
