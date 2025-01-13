@@ -32,7 +32,7 @@ func main() {
 
 	repo := postgres.NewPostgres(db, loadDbConfigs.Schema, loadDbConfigs.TableConfigs, loadDbConfigs.TableAlerts)
 
-	apiResponse := api.NewAPIResponse(nil)
+	apiResponse := api.NewUpholdApi(nil)
 
 	tickers := prompt.AskUserInput(apiResponse)
 
@@ -42,15 +42,13 @@ func main() {
 
 	fmt.Println("Starting bot")
 
-	go gracefulShutdown(cancel)
-
 	for _, t := range *tickers {
 		go runSchedulerBot(ctx, &wg, *t, apiResponse, repo)
 	}
 
-	wg.Wait()
+	go gracefulShutdown(cancel)
 
-	fmt.Println("All tickers finished")
+	wg.Wait()
 }
 
 func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models.Ticker, apiResponse *api.UpholdApi, repo *postgres.Postgres) {
@@ -65,7 +63,10 @@ func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models
 	if tickerValue.Config.Lifetime > 0 {
 		select {
 		case <-time.After(tickerValue.Config.Lifetime * time.Second):
+
 			tickerScheduler.SchedulerStop()
+
+			fmt.Printf("Scheduler for %s completed", tickerValue.Pair)
 		case <-ctx.Done():
 			fmt.Println("Shutting down scheduler for", tickerValue.Pair)
 

@@ -54,7 +54,7 @@ func TestFetchPairData(t *testing.T) {
 			PublicURLTicker = server.URL
 			defer func() { PublicURLTicker = oldURL }()
 
-			a := NewAPIResponse(nil)
+			a := NewUpholdApi(nil)
 
 			ticker := &models.Ticker{Pair: "BTC-USD"}
 
@@ -105,7 +105,7 @@ func TestParseAPIData(t *testing.T) {
 			}
 			defer resp.Body.Close()
 
-			a := NewAPIResponse(nil)
+			a := NewUpholdApi(nil)
 			ticker := &models.Ticker{}
 
 			err := a.ParseAPIData(resp, ticker)
@@ -179,7 +179,7 @@ func TestIsPairValid(t *testing.T) {
 			PublicURLTicker = server.URL
 			defer func() { PublicURLTicker = oldURL }()
 
-			a := NewAPIResponse(nil)
+			a := NewUpholdApi(nil)
 			valid, err := a.IsPairValid("BTC")
 
 			assert.Equal(t, tt.wantValid, valid)

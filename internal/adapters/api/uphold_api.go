@@ -18,8 +18,8 @@ type UpholdApi struct {
 	client *http.Client
 }
 
-// NewAPIResponse returns an new instance of UpholdApi
-func NewAPIResponse(client *http.Client) *UpholdApi {
+// NewUpholdApi returns an new instance of UpholdApi
+func NewUpholdApi(client *http.Client) *UpholdApi {
 	if client == nil {
 		client = http.DefaultClient
 	}
