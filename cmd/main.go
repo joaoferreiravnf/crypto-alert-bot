@@ -32,9 +32,11 @@ func main() {
 
 	repo := postgres.NewPostgres(db, loadDbConfigs.Schema, loadDbConfigs.TableConfigs, loadDbConfigs.TableAlerts)
 
-	apiResponse := api.NewUpholdApi(nil)
+	upholdApi := api.NewUpholdApi(nil)
 
-	tickers := prompt.AskUserInput(apiResponse)
+	publisher := logger.NewTickerPublisher()
+
+	tickers := prompt.AskUserInput(upholdApi)
 
 	var wg sync.WaitGroup
 
@@ -43,7 +45,7 @@ func main() {
 	fmt.Println("Starting bot")
 
 	for _, t := range *tickers {
-		go runSchedulerBot(ctx, &wg, *t, apiResponse, repo)
+		go runSchedulerBot(ctx, &wg, *t, upholdApi, repo, publisher)
 	}
 
 	go gracefulShutdown(cancel)
@@ -51,31 +53,29 @@ func main() {
 	wg.Wait()
 }
 
-func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, tickerValue models.Ticker, apiResponse *api.UpholdApi, repo *postgres.Postgres) {
+func runSchedulerBot(ctx context.Context, wg *sync.WaitGroup, ticker models.Ticker, upholdApi *api.UpholdApi, repo *postgres.Postgres, publisher services.Publisher) {
 	defer wg.Done()
 
-	tickerPublisher := logger.NewTickerPublisher()
-
-	tickerScheduler := services.NewTickerScheduler(apiResponse, &tickerValue, repo, tickerPublisher)
+	tickerScheduler := services.NewTickerScheduler(upholdApi, &ticker, repo, publisher)
 
 	tickerScheduler.SchedulerStart(ctx)
 
-	if tickerValue.Config.Lifetime > 0 {
+	if ticker.Config.Lifetime > 0 {
 		select {
-		case <-time.After(tickerValue.Config.Lifetime * time.Second):
+		case <-time.After(ticker.Config.Lifetime * time.Second):
 
 			tickerScheduler.SchedulerStop()
 
-			fmt.Printf("Scheduler for %s completed", tickerValue.Pair)
+			fmt.Printf("Scheduler for %s completed", ticker.Pair)
 		case <-ctx.Done():
-			fmt.Println("Shutting down scheduler for", tickerValue.Pair)
+			fmt.Println("Shutting down scheduler for", ticker.Pair)
 
 			tickerScheduler.SchedulerStop()
 		}
 	} else {
 		select {
 		case <-ctx.Done():
-			fmt.Println("Shutting down scheduler for", tickerValue.Pair)
+			fmt.Println("Shutting down scheduler for", ticker.Pair)
 
 			tickerScheduler.SchedulerStop()
 

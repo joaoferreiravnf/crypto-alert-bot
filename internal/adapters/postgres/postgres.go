@@ -43,10 +43,10 @@ func (p *Postgres) Save(ctx context.Context, timestamp time.Time, ticker *models
 		return errors.Wrap(err, "failed to save ticker configs into configs table")
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s.%s (pair, price_change, perc_change, final_price, config_id, timestamp) VALUES ($1, $2, $3, $4, $5, $6)",
+	alertQuery := fmt.Sprintf("INSERT INTO %s.%s (pair, price_change, perc_change, final_price, config_id, timestamp) VALUES ($1, $2, $3, $4, $5, $6)",
 		p.DbSchema, p.DbTableAlerts)
 
-	_, err = tx.ExecContext(ctx, query, ticker.Pair, ticker.AskPriceChange, ticker.AskPercChange, ticker.CurrentAsk, configID, timestamp)
+	_, err = tx.ExecContext(ctx, alertQuery, ticker.Pair, ticker.AskPriceChange, ticker.AskPercChange, ticker.CurrentAsk, configID, timestamp)
 	if err != nil {
 		return errors.Wrap(err, "failed to save ticker into alerts table")
 	}
