@@ -9,7 +9,7 @@ import (
 
 func TestNewTicker(t *testing.T) {
 	pair := "BTC-USD"
-	refreshRate := int64(60)
+	refreshRate := 60.0
 	percOscillation := 5.0
 	lifetime := 24 * time.Hour
 

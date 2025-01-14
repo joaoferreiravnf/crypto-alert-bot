@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +13,8 @@ import (
 )
 
 func TestFetchPairData(t *testing.T) {
+	ctx := context.Background()
+
 	tests := []struct {
 		name         string
 		statusCode   int
@@ -42,7 +45,6 @@ func TestFetchPairData(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(tt.statusCode)
@@ -58,7 +60,7 @@ func TestFetchPairData(t *testing.T) {
 
 			ticker := &models.Ticker{Pair: "BTC-USD"}
 
-			err := a.FetchPairData(ticker)
+			err := a.FetchPairData(ctx, ticker)
 
 			if tt.wantErr {
 				assert.Error(t, err)

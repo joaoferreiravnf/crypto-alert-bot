@@ -4,9 +4,8 @@ import (
 	"go.uber.org/mock/gomock"
 	"testing"
 	"time"
-	"uphold-alert-bot/internal/mocks/mock_api"
-	"uphold-alert-bot/internal/mocks/mock_publisher"
-	"uphold-alert-bot/internal/mocks/mock_repository"
+	mock_prompt "uphold-alert-bot/internal/adapters/mocks/mock_api"
+	"uphold-alert-bot/internal/mocks/mock_scheduler"
 
 	"github.com/stretchr/testify/assert"
 
@@ -18,9 +17,9 @@ func TestTickerScheduler(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockAPI := mock_api.NewMockApiResponseInterface(ctrl)
-		mockRepo := mock_repository.NewMockRepository(ctrl)
-		mockPublisher := mock_services.NewMockPublisherInterface(ctrl)
+		mockAPI := mock_prompt.NewMockApiDataValidator(ctrl)
+		mockRepo := mock_services.NewMockRecorder(ctrl)
+		mockPublisher := mock_services.NewMockPublisher(ctrl)
 
 		testTicker := &models.Ticker{
 			Config: models.TickerConfig{
