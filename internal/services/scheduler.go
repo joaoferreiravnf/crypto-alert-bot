@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"time"
-	"uphold-alert-bot/internal/models"
+	"crypto-alert-bot/internal/models"
 )
 
 var apiTimeout = 5 * time.Second
@@ -69,7 +69,7 @@ func (ts *TickerScheduler) SchedulerStart(ctx context.Context) {
 
 				dbCtx, dbCancel := context.WithTimeout(ctx, dbTimeout*time.Second)
 				defer dbCancel()
-				
+
 				timestamp := time.Now().UTC()
 
 				ts.publisher.Publish(timestamp, ts.ticker)

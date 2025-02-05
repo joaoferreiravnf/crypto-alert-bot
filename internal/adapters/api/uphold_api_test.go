@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"crypto-alert-bot/internal/models"
 	"github.com/stretchr/testify/assert"
-	"uphold-alert-bot/internal/models"
 )
 
 func TestFetchPairData(t *testing.T) {

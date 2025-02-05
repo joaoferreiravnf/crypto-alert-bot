@@ -2,12 +2,12 @@ package prompt
 
 import (
 	"bufio"
+	"crypto-alert-bot/internal/models"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-	"uphold-alert-bot/internal/models"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=../mocks/mock_api/mock_$GOFILE

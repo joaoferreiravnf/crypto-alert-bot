@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 	time "time"
-	models "uphold-alert-bot/internal/models"
+	models "crypto-alert-bot/internal/models"
 
 	gomock "go.uber.org/mock/gomock"
 )

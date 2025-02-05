@@ -1,4 +1,4 @@
-# Uphold Alert Bot
+# Crypto Alert Bot
 
 This project consists of a bot that continuously checks specified trading pairs and triggers an alert whenever a given price change threshold is met. All thresholds met are saved into a Postgresql database
 
@@ -29,8 +29,8 @@ This project consists of a bot that continuously checks specified trading pairs 
 1. Clone the Repository:
 - Open your terminal and enter:
 ```
-git clone https://github.com/joaoferreiravnf/uphold-alert-bot.git
-cd uphold-alert-bot
+git clone https://github.com/joaoferreiravnf/crypto-alert-bot.git
+cd crypto-alert-bot
 ```
 2. Run the Bot Locally:
 - To start the bot, run:
@@ -63,8 +63,8 @@ docker compose down
 5. Query the database:
 - At any point, before or after stopping the bot, you can check the database for the stored alerts:
 ```
-docker exec -it uphold_alert_db psql -U postgres -d uphold_alert_db
-SELECT * FROM uphold_alerts.alerts;
+docker exec -it crypto_alert_db psql -U postgres -d crypto_alert_db
+SELECT * FROM crypto_alerts.alerts;
 ```
 
 ### Project Structure

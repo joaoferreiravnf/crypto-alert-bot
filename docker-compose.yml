@@ -3,11 +3,11 @@ version: "3.8"
 services:
   db:
     image: postgres:15
-    container_name: uphold_alert_db
+    container_name: crypto_alert_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: uphold_alert_db
+      POSTGRES_DB: crypto_alert_db
     ports:
       - "5432:5432"
     volumes:
@@ -16,7 +16,7 @@ services:
   bot:
     image: flyway/flyway:latest
     build: .
-    container_name: uphold_alert_bot
+    container_name: crypto_alert_bot
     stdin_open: true
     tty: true
     depends_on:
@@ -26,12 +26,12 @@ services:
       PASSWORD: postgres
       HOST: db
       PORT: 5432
-      NAME: uphold_alert_db
-      SCHEMA: uphold_alerts
+      NAME: crypto_alert_db
+      SCHEMA: crypto_alerts
       TABLE_ALERTS: alerts
       TABLE_CONFIGS: configs
     command: >
-      -url=jdbc:postgresql://db:5432/uphold_alert_db
+      -url=jdbc:postgresql://db:5432/crypto_alert_db
       -user=postgres
       -password=postgres
       migrate

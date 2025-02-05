@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"crypto-alert-bot/internal/models"
 	"log/slog"
 	"time"
-	"uphold-alert-bot/internal/models"
 )
 
 // TickerPublisher is a struct that implements the Publisher

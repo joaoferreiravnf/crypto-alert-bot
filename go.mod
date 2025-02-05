@@ -1,4 +1,4 @@
-module uphold-alert-bot
+module crypto-alert-bot
 
 go 1.22.1
 

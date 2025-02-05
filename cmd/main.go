@@ -2,6 +2,13 @@ package main
 
 import (
 	"context"
+	"crypto-alert-bot/config"
+	"crypto-alert-bot/internal/adapters/api"
+	"crypto-alert-bot/internal/adapters/logger"
+	"crypto-alert-bot/internal/adapters/postgres"
+	"crypto-alert-bot/internal/adapters/prompt"
+	"crypto-alert-bot/internal/models"
+	"crypto-alert-bot/internal/services"
 	"fmt"
 	"log"
 	"os"
@@ -9,13 +16,6 @@ import (
 	"sync"
 	"syscall"
 	"time"
-	"uphold-alert-bot/config"
-	"uphold-alert-bot/internal/adapters/api"
-	"uphold-alert-bot/internal/adapters/logger"
-	"uphold-alert-bot/internal/adapters/postgres"
-	"uphold-alert-bot/internal/adapters/prompt"
-	"uphold-alert-bot/internal/models"
-	"uphold-alert-bot/internal/services"
 )
 
 func main() {

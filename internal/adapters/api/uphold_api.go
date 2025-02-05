@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"net/http"
-	"uphold-alert-bot/internal/models"
+	"crypto-alert-bot/internal/models"
 )
 
 var PublicURLTicker = "https://api.uphold.com/v0/ticker"

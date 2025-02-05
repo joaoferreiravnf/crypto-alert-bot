@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"time"
-	"uphold-alert-bot/internal/models"
+	"crypto-alert-bot/internal/models"
 )
 
 // Postgres represents the postgres postgres
